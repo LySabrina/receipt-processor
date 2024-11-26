@@ -32,7 +32,7 @@ public class ReceiptController {
     public ResponseEntity<?> process(@RequestBody @Valid ReceiptDTO receiptDTO) {
         Receipt receipt = receiptService.process(receiptDTO);
         ReceiptIdDTO receiptIdDTO = new ReceiptIdDTO(receipt.getUuid());
-        return ResponseEntity.status(HttpStatus.CREATED).body(receiptIdDTO);
+        return ResponseEntity.status(200).body(receiptIdDTO);
     }
 
     /**
@@ -45,7 +45,7 @@ public class ReceiptController {
 
         Receipt receipt = receiptService.getReceipt(UUID.fromString(id));
         if(receipt == null){
-            return ResponseEntity.status(400).body("No receipt found for that id ");
+            return ResponseEntity.status(404).body("No receipt found for that id ");
         }
         ReceiptPointsDTO pointsDTO = new ReceiptPointsDTO(receipt.getPoints());
         return ResponseEntity.status(200).body(pointsDTO);
