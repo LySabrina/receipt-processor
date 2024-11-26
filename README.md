@@ -5,4 +5,18 @@ Inside the receipt-processor directory
 
 # How to test endpoints
 Using Postman: 
+1) Make a POST request with request data at endpoint:
+   http://localhost:8080/receipts/process
+
+**Example:**
+
+
+![Target Receipt POST Request](./images/POST_Request.png)
+
+2) Make a GET request with id of Receipt:
+http://localhost:8080/receipts/{id}/points
+
+**Example**
+
+![GET Request for Points](./images/GET_Request.png)
 

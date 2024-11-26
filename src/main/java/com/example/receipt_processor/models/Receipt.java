@@ -37,4 +37,6 @@ public class Receipt {
     private double total;
 
     private int points;
+
+
 }

@@ -1,4 +1,5 @@
 package com.example.receipt_processor.service;
+
 import com.example.receipt_processor.dto.ItemDTO;
 import com.example.receipt_processor.dto.ReceiptDTO;
 import com.example.receipt_processor.models.Item;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -22,6 +24,8 @@ import java.time.LocalTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
 public class ReceiptServiceTest {
@@ -39,7 +43,7 @@ public class ReceiptServiceTest {
 
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
 
         ItemDTO i1 = new ItemDTO();
         i1.setPrice(20.10);
@@ -50,9 +54,9 @@ public class ReceiptServiceTest {
 
         receiptDTO = new ReceiptDTO(
                 "Target",
-                LocalDate.of(2024,11,25),
-                LocalTime.of(9,45),
-                List.of(i1,i2),
+                LocalDate.of(2024, 11, 25),
+                LocalTime.of(9, 45),
+                List.of(i1, i2),
                 31.31
         );
     }
@@ -66,6 +70,46 @@ public class ReceiptServiceTest {
 
     @Test
     void getReceipt() {
+        //given
+        UUID id = UUID.randomUUID();
+        Receipt receipt = new Receipt(
+                id,
+                "Target",
+                LocalDate.of(2024, 12, 12),
+                LocalTime.of(12, 12),
+                List.of(new Item("Pepsi", 1.20)),
+                1.20,
+                6)
+                ;
+        //when
+        when(receiptRepository.findById(id)).thenReturn(Optional.of(receipt));
+        Receipt r = receiptService.getReceipt(id);
+        //then
+        verify(receiptRepository, times(1)).findById(id);
+        assertThat(r).isEqualTo(receipt);
+
+    }
+
+    @Test
+    void getReceiptNull() {
+        //given
+        UUID id = UUID.randomUUID();
+        Receipt receipt = new Receipt(
+                id,
+                "Target",
+                LocalDate.of(2024, 12, 12),
+                LocalTime.of(12, 12),
+                List.of(new Item("Pepsi", 1.20)),
+                1.20,
+                6)
+                ;
+        //when
+        when(receiptRepository.findById(id)).thenReturn(Optional.empty());
+        Receipt r = receiptService.getReceipt(id);
+        //then
+        verify(receiptRepository, times(1)).findById(id);
+        assertThat(r).isNotEqualTo(receipt);
+        assertThat(r).isNull();
 
     }
 
@@ -88,13 +132,13 @@ public class ReceiptServiceTest {
     }
 
     @Test
-    void totalPointsRound(){
+    void totalPointsRound() {
         int actual = receiptService.totalPoints(12.00);
         assertThat(actual).isEqualTo(75);
     }
 
     @Test
-    void totalPointsMultiplier(){
+    void totalPointsMultiplier() {
         int actual = receiptService.totalPoints(0.25);
         assertThat(actual).isEqualTo(25);
     }
@@ -107,7 +151,7 @@ public class ReceiptServiceTest {
     }
 
     @Test
-    void itemsPointsOdd(){
+    void itemsPointsOdd() {
         int pointsPerPair = 5;
         ItemDTO i3 = new ItemDTO();
         i3.setPrice(20.00);
@@ -135,7 +179,7 @@ public class ReceiptServiceTest {
 
     @Test
     void purchaseDatePointsEven() {
-        LocalDate date = LocalDate.of(2024,11,24);
+        LocalDate date = LocalDate.of(2024, 11, 24);
         int actual = receiptService.purchaseDatePoints(date);
         assertThat(actual).isEqualTo(0);
     }
@@ -147,13 +191,14 @@ public class ReceiptServiceTest {
     }
 
     @Test
-    void purchaseTimePointsBetween2pmAnd4pm(){
+    void purchaseTimePointsBetween2pmAnd4pm() {
         LocalTime time = LocalTime.of(15, 20);
         int actual = receiptService.purchaseTimePoints(time);
         assertThat(actual).isEqualTo(10);
     }
+
     @Test
-    void purchaseTimePointsTimeInclusive(){
+    void purchaseTimePointsTimeInclusive() {
         LocalTime time = LocalTime.of(14, 0);
         int actual = receiptService.purchaseTimePoints(time);
         assertThat(actual).isEqualTo(0);

@@ -30,7 +30,9 @@ public class ReceiptService {
     }
 
     /**
-     * Processes the Receipt and assign appropriate points
+     * Processes the Receipt and gathers points based on the receipt
+     * Will first gather the Items and save it into in-memory DB if it does not exist
+     * Finally, saves the receipt into db
      * @param receiptDTO the receipt sent by the user
      * @return Receipt with updated points
      */
@@ -138,8 +140,7 @@ public class ReceiptService {
     public int descriptionPoints(List<ItemDTO> items) {
         int points = 0;
         for (ItemDTO item : items) {
-            if (item.getShortDescription().length() % 3 == 0) {
-                System.out.println(item.getPrice() * 0.2);
+            if (item.getShortDescription().trim().length() % 3 == 0) {
                 int itemPoint = (int) Math.ceil(item.getPrice() * 0.2);
                 points += itemPoint;
             }
