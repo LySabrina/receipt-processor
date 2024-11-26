@@ -8,6 +8,7 @@ import com.example.receipt_processor.repository.ItemRepository;
 import com.example.receipt_processor.repository.ReceiptRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -103,7 +104,10 @@ public class ReceiptService {
      */
     public int totalPoints(double total) {
         int points = 0;
-        if (total % 0.25 == 0) {
+        BigDecimal totalBD = new BigDecimal(Double.toString(total));
+        BigDecimal multiple = new BigDecimal(Double.toString(0.25));
+
+        if (totalBD.remainder(multiple).doubleValue() == 0) {
             points += 25;
         }
         if (total % 1 == 0) {

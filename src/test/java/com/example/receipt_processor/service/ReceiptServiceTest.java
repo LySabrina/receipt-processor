@@ -92,6 +92,7 @@ public class ReceiptServiceTest {
         int actual = receiptService.totalPoints(12.00);
         assertThat(actual).isEqualTo(75);
     }
+
     @Test
     void totalPointsMultiplier(){
         int actual = receiptService.totalPoints(0.25);

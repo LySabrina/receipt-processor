@@ -22,8 +22,8 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle
-     * @return
+     * Handle when user attempts to find an invalid id that is not in the format of UUID
+     * @return error response
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgException(){
