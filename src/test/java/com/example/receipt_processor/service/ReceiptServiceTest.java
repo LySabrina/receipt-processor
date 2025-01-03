@@ -2,6 +2,7 @@ package com.example.receipt_processor.service;
 
 import com.example.receipt_processor.dto.ItemDTO;
 import com.example.receipt_processor.dto.ReceiptDTO;
+import com.example.receipt_processor.exceptions.NoIdFoundException;
 import com.example.receipt_processor.models.Item;
 import com.example.receipt_processor.models.Receipt;
 import com.example.receipt_processor.repository.ItemRepository;
@@ -69,7 +70,7 @@ public class ReceiptServiceTest {
     }
 
     @Test
-    void getReceipt() {
+    void getReceipt() throws NoIdFoundException {
         //given
         UUID id = UUID.randomUUID();
         Receipt receipt = new Receipt(
@@ -91,7 +92,7 @@ public class ReceiptServiceTest {
     }
 
     @Test
-    void getReceiptNull() {
+    void getReceiptNull() throws NoIdFoundException {
         //given
         UUID id = UUID.randomUUID();
         Receipt receipt = new Receipt(
@@ -110,7 +111,49 @@ public class ReceiptServiceTest {
         verify(receiptRepository, times(1)).findById(id);
         assertThat(r).isNotEqualTo(receipt);
         assertThat(r).isNull();
+    }
 
+    @Test
+    void shortDescriptionG(){
+        List<Item> items = new ArrayList<>();
+        Item i1= new Item("gataorade", 10.11);
+        items.add(i1);
+        int actual = receiptService.shortDescriptionLetterG(items);
+        assertThat(actual).isEqualTo(10);
+    }
+
+    @Test
+    void shortDescriptionGandg(){
+        List<Item> items = new ArrayList<>();
+        Item i1= new Item("gataorade", 10.11);
+        Item i2= new Item("Gataorade", 10.11);
+        Item i3= new Item("apple", 10.11);
+        items.add(i1);
+        items.add(i2);
+        items.add(i3);
+        int actual = receiptService.shortDescriptionLetterG(items);
+        assertThat(actual).isEqualTo(20);
+
+
+    }
+
+    /**
+     * Customer scan receipt, scan receipt again
+     * How to prevent duplicate scans?
+     * JSON representation of receipt, few weeks later, user tries to scan it again
+     *
+     * - Receipt ==> DB
+     * - Retailer, PurchaseDate, purChaseTime, Items, total
+     * (receipt --> HH::MM)
+     *
+     * Query with all those fields, to see if they already saved that receipt,
+     *
+     */
+    @Test
+    void shortDescriptionNoG(){
+        List<Item> items = receiptService.convertToItem(receiptDTO.getItems());
+        int actual = receiptService.shortDescriptionLetterG(items);
+        assertThat(actual).isEqualTo(0);
     }
 
     @Test

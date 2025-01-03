@@ -20,7 +20,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 public class Receipt {
+
+    // DO the hashing later ==> hash so we can check if the user attempts to scan the same receipt again
+
+
     @Id
+    // Improvement; @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
     private String retailer;
@@ -30,9 +35,12 @@ public class Receipt {
     private LocalTime purchaseTime;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-
+    /**
+     * item can belong to different receipt
+     * Receipt, can have different items
+     * Does it make sense for unidirectional? Yes, better to navigate through one entity rather than both
+     */
     private List<Item> items;
-
 
     private double total;
 

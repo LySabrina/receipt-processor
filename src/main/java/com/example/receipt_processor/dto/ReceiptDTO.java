@@ -1,10 +1,7 @@
 package com.example.receipt_processor.dto;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,18 +12,18 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ReceiptDTO {
-    @NotBlank
+    @NotBlank(message = "Retailer can not be blank")
     private String retailer;
-    @NotNull
+    @NotNull(message = "Purchase Date missing")
     private LocalDate purchaseDate;
-    @NotNull
+
+    @NotNull(message = "Purchase Time missing")
     private LocalTime purchaseTime;
 
-
-    @NotEmpty
-    @Valid
+    @NotEmpty(message = "No items purchased")
     private List<ItemDTO> items;
 
-    @Positive
+    @Positive(message = "Negative Total Found")
+    @Digits(integer = Integer.MAX_VALUE, fraction = 2, message = "Invalid Total Amount")
     private double total;
 }

@@ -9,6 +9,4 @@ import java.util.UUID;
 @Data
 public class ReceiptPointsDTO {
     private int points;
-
-
 }

@@ -8,5 +8,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 public class ReceiptIdDTO {
+    // couuld have used a validation here
     private UUID id;
 }
